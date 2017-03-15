@@ -1,0 +1,45 @@
+# To get started with security, check out the documentation:
+# http://symfony.com/doc/current/security.html
+security:
+
+    # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+    providers:
+        our_db_provider:
+            entity:
+                class: AppBundle:User
+                property: username
+
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        api:
+            pattern: ^/
+            stateless: true
+            anonymous: ~
+            http_basic: ~
+            provider: our_db_provider
+            entry_point: security.basic_auth_entry_point
+            request_matcher: security.basic_auth_request_matcher
+
+        default:
+             pattern: ^/
+             anonymous: ~
+             stateless: false
+             guard:
+                authenticators:
+                    - security.form_login_authenticator
+             logout:
+                path: logout
+                success_handler: security.logout_rest_handler
+             provider: our_db_provider
+
+    access_control:
+        - { path: ^/lucky, roles: ROLE_ADMIN }
+        - { path: ^/logout$, roles: ROLE_ADMIN }
