@@ -1,4 +1,7 @@
-myproject
+Symfony3 framework
 =========
 
-A Symfony project created on February 20, 2017, 9:28 am.
+Experimenting with Symfony3 framework
+- Basic authentication (stateless) and login form (stateful)
+- JSON responses
+- Events triggering

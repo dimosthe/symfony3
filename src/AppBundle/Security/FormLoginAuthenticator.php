@@ -69,16 +69,16 @@ class FormLoginAuthenticator extends AbstractFormLoginAuthenticator
         $response = new JsonResponse('', Response::HTTP_UNAUTHORIZED);
 
         if($exception instanceof UsernameNotFoundException)
-            $message = 'Username not found';
+            $message = 'Login failed';
         elseif ($exception instanceof BadCredentialsException)
-            $message = 'Invalid Password';
+            $message = 'Login failed';
         elseif ($exception instanceof AuthenticationException)
             $message = $exception->getMessage();
         else
             $message = 'Login Failed';
 
         $response->setData(array(
-            'data' => 'failure login form',
+            'status' => 'failure',
             'message' => $message
         ));
 
@@ -90,7 +90,8 @@ class FormLoginAuthenticator extends AbstractFormLoginAuthenticator
         $response = new JsonResponse();
 
         $response->setData(array(
-            'data' => 'success'
+            'status' => 'success',
+            'message' => 'Login successful'
         ));
 
         return $response;
@@ -113,10 +114,11 @@ class FormLoginAuthenticator extends AbstractFormLoginAuthenticator
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $response = new JsonResponse('', Response::HTTP_UNAUTHORIZED);
+        $response = new JsonResponse('', Response::HTTP_FORBIDDEN);
 
         $response->setData(array(
-            'data' => 'failure login form'
+            'status' => 'failure',
+            'message' => 'Forbidden'
         ));
 
         return $response;
