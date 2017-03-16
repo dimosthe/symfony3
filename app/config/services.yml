@@ -19,11 +19,17 @@ services:
       class: AppBundle\Security\FormLoginAuthenticator
       arguments: ["@router", "@security.password_encoder"]
 
-  app.exception_listener:
+  app.request_listener:
       class: AppBundle\EventListener\RequestListener
       arguments: ['@logger']
       tags:
           - { name: kernel.event_listener, event: kernel.request }
+
+  app.exception_listener:
+        class: AppBundle\EventListener\ExceptionListener
+        arguments: ['@logger']
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 
   app.product_listener:
         class: AppBundle\EventListener\ProductCreatedListener
