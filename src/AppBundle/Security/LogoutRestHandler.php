@@ -12,7 +12,8 @@ class LogoutRestHandler implements  LogoutSuccessHandlerInterface{
         $response = new JsonResponse();
 
         $response->setData(array(
-            'data' => 'success'
+            'status' => 'success',
+            'message' => 'Logout successful'
         ));
 
         return $response;

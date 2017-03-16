@@ -14,10 +14,11 @@ class BasicAuthEntryPoint implements AuthenticationEntryPointInterface
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $response = new JsonResponse('', Response::HTTP_UNAUTHORIZED);
+        $response = new JsonResponse('', Response::HTTP_FORBIDDEN);
 
         $response->setData(array(
-            'data' => 'failure basic authentication'
+            'status' => 'failure',
+            'message' => 'Forbidden'
         ));
 
         return $response;
