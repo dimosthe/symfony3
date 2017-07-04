@@ -6,3 +6,4 @@ Experimenting with Symfony3 framework
 - JSON responses
 - Events triggering
 - Monolog for logging
+- DoctrineMigrationsBundle for database migrations
