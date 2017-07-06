@@ -21,8 +21,8 @@ class ExceptionListener
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
-        $code = $exception->getStatusCode();
-
+        //$code = $exception->getStatusCode();
+        $code = 200;
         $responseData = [
             'error' => [
                 'code' => $code,

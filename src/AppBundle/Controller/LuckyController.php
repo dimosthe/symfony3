@@ -89,4 +89,23 @@ class LuckyController extends Controller
         return $this->json(array('response' => $product->getId()));
         //return new Response('Saved new product with id '.$product->getId());
     }
+
+    /** 
+     * @Route("/lucky/produce", name="produce") 
+     */ 
+    public function produceAction() 
+    {
+        for($i = 1; $i < 21; $i++)
+        { 
+            $msg = array('firstName' => "first name".$i, 'lastName' => "last name".$i); 
+            $this->get("producer_service")->publish(json_encode($msg)); 
+        } 
+       $response = new JsonResponse();
+
+        $response->setData(array(
+            'status' => 'success' 
+        ));
+
+        return $response;
+    }
 }

@@ -37,3 +37,10 @@ services:
         tags:
             - { name: kernel.event_listener, event: product.created }
             - { name: monolog.logger, channel: product }
+
+  producer_service:
+        class: AppBundle\Services\Producer
+        arguments: ["@old_sound_rabbit_mq.send_email_producer"]
+
+  send_email_call:
+        class: AppBundle\Services\Consumer
