@@ -7,3 +7,4 @@ Experimenting with Symfony3 framework
 - Events triggering
 - Monolog for logging
 - DoctrineMigrationsBundle for database migrations
+- RabbitMQ integrated for background jobs
