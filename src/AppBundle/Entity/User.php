@@ -74,6 +74,7 @@ class User implements UserInterface, \Serializable
     }
 
     /** @see \Serializable::serialize() */
+    // At the end of each request, the User object is serialized to the session
     public function serialize()
     {
         return serialize(array(

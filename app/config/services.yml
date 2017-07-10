@@ -33,14 +33,25 @@ services:
 
   app.product_listener:
         class: AppBundle\EventListener\ProductCreatedListener
-        arguments: ['@logger']
+        arguments: ['@logger', '@salesforce_producer']
         tags:
             - { name: kernel.event_listener, event: product.created }
             - { name: monolog.logger, channel: product }
 
-  producer_service:
+  email_producer:
         class: AppBundle\Services\Producer
         arguments: ["@old_sound_rabbit_mq.send_email_producer"]
 
+  salesforce_producer:
+        class: AppBundle\Services\SalesforceProducer
+        arguments: ["@old_sound_rabbit_mq.salesforce_producer"]
+
   send_email_call:
         class: AppBundle\Services\Consumer
+
+  salesforce_call:
+        class: AppBundle\Services\SalesforceConsumer
+        arguments: ['@logger', '@doctrine.orm.entity_manager']
+        tags:
+          - { name: monolog.logger, channel: salesforce }
+

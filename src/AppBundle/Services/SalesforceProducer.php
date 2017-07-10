@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Services;
 
-class Producer
+class SalesforceProducer
 {
     private $producer;
     public function __Construct($producer)

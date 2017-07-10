@@ -77,13 +77,13 @@ doctrine_migrations:
 
 old_sound_rabbit_mq:
     connections:
-        default:
+        broker_connection:
             host:     'localhost'
             port:     5672
-            user:     'guest'
-            password: 'guest'
+            user:     'rabbitmq_user'
+            password: '_5)B9:awwMCB5)6_'
             vhost:    '/'
-            lazy:     false
+            lazy:     true
             connection_timeout: 3
             read_write_timeout: 3
 
@@ -94,7 +94,7 @@ old_sound_rabbit_mq:
             heartbeat: 0
 
             #requires php_sockets.dll
-            use_socket: true # default false
+            #use_socket: true # default false
         another:
             # A different (unused) connection defined by an URL. One can omit all parts,
             # except the scheme (amqp:). If both segment in the URL and a key value (see above)
@@ -103,13 +103,24 @@ old_sound_rabbit_mq:
             url: 'amqp://guest:password@localhost:5672/vhost?lazy=1&connection_timeout=6'
     producers:
         send_email:
-            connection:       default
+            connection:       broker_connection
             exchange_options: {name: 'send_email', type: direct}
             queue_options:    {name: 'email_queue'}
             #service_alias:    api_call_service # no alias by default
+        salesforce:
+            connection:       broker_connection
+            exchange_options: {name: 'salesforce', type: direct}
+            queue_options:    {name: 'salesforce'}
     consumers:
         send_email:
-            connection:       default
+            connection:       broker_connection
             exchange_options: {name: 'send_email', type: direct}
             queue_options:    {name: 'email_queue'}
             callback:         send_email_call
+            qos_options:      {prefetch_size: 0, prefetch_count: 1, global: false} # don't dispatch a new message to a worker until it has processed and acknowledged the previous one. 
+        salesforce:
+            connection:       broker_connection
+            exchange_options: {name: 'salesforce', type: direct}
+            queue_options:    {name: 'salesforce'}
+            callback:         salesforce_call
+            qos_options:      {prefetch_size: 0, prefetch_count: 1, global: false}

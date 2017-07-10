@@ -11,40 +11,47 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use AppBundle\Events;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 
-class LuckyController extends Controller
+class ProductController extends Controller
 {
     /**
-     * @Route("/lucky/number")
+     * @Route("/products")
+     * @Method("GET")
      */
-    public function numberAction()
+    public function indexAction()
     {
-        $number = mt_rand(0, 100);
-        $this->get('monolog.logger.product')->emergency('this is a test', array('info' => 'foo'));
+        $repository = $this->getDoctrine()->getRepository(Product::class);
+        $products = $repository->findAll();
 
-        /*return $this->render('lucky/number.html.twig', array(
-            'number' => $number,
-        ));*/
-        /*return $this->render('default/index.html.twig', [
-            'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-        ]);*/
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        $normalizer = new ObjectNormalizer($classMetadataFactory);
+        $serializer = new Serializer(array($normalizer));
 
+        $productsNorm = $serializer->normalize($products, null, array('groups' => array('limited')));
+        $productsLog = $serializer->normalize($products, null, array('groups' => array('full')));
 
+        $this->get('monolog.logger.product')->info('/products', array('products' => $productsLog));
 
         $response = new JsonResponse();
 
         $response->setData(array(
-            'data' => $number
+            'message' => 'Products list',
+            'data' => array('products' => $productsNorm)
         ));
 
         return $response;
     }
 
     /**
-     * @Route("/lucky/product")
+     * @Route("/product/create")
      * @Method("POST")
      */
-    public function productAction(Request $request)
+    public function createAction(Request $request)
     {
         $allowedFields = array('name', 'price', 'description');
         $request = $request->request->all();
@@ -76,7 +83,12 @@ class LuckyController extends Controller
              */
             $errorsString = (string) $errors;
 
-            return new Response($errorsString);
+            $this->get('monolog.logger.product')->error('/product/create', array('error' => $errorsString));
+
+            return $this->json(
+                array(
+                    'data' => $errorsString
+            ));
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -87,20 +99,20 @@ class LuckyController extends Controller
         $this->get('event_dispatcher')->dispatch(Events::PRODUCT_CREATED, $event);
 
         return $this->json(array('response' => $product->getId()));
-        //return new Response('Saved new product with id '.$product->getId());
     }
 
     /** 
-     * @Route("/lucky/produce", name="produce") 
+     * @Route("/product/produce", name="produce") 
      */ 
     public function produceAction() 
     {
         for($i = 1; $i < 21; $i++)
         { 
-            $msg = array('firstName' => "first name".$i, 'lastName' => "last name".$i); 
-            $this->get("producer_service")->publish(json_encode($msg)); 
+            $msg = array('firstName' => "first name".$i, 'lastName' => "last name".$i, "count" => $i); 
+            $this->get("email_producer")->publish(json_encode($msg)); 
         } 
-       $response = new JsonResponse();
+        
+        $response = new JsonResponse();
 
         $response->setData(array(
             'status' => 'success' 
