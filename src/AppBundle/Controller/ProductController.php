@@ -106,9 +106,12 @@ class ProductController extends Controller
      */ 
     public function produceAction() 
     {
-        for($i = 1; $i < 21; $i++)
+        for($i = 1; $i < 1001; $i++)
         { 
-            $msg = array('firstName' => "first name".$i, 'lastName' => "last name".$i, "count" => $i); 
+            $timestamp = microtime(true)*10000;
+            $msgId = $timestamp.random_int(10000000, 99999999);
+
+            $msg = array('firstName' => "first name".$i, 'lastName' => "last name".$i, "count" => $i, "msgId" => $msgId); 
             $this->get("email_producer")->publish(json_encode($msg)); 
         } 
         

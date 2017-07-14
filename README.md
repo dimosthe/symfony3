@@ -8,3 +8,4 @@ Experimenting with Symfony3 framework
 - Monolog for logging
 - DoctrineMigrationsBundle for database migrations
 - RabbitMQ integrated for background jobs
+- Supervisor used for managing consumer daemons

@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new AppBundle\AppBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new OldSound\RabbitMqBundle\OldSoundRabbitMqBundle(),
+            new Phobetor\RabbitMqSupervisorBundle\RabbitMqSupervisorBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

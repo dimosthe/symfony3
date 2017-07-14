@@ -31,7 +31,8 @@
         "twig/twig": "^1.0||^2.0",
         "symfony/event-dispatcher": "^3.2",
         "doctrine/doctrine-migrations-bundle": "^1.0",
-        "php-amqplib/rabbitmq-bundle": "^1.13"
+        "php-amqplib/rabbitmq-bundle": "^1.13",
+        "phobetor/rabbitmq-supervisor-bundle": "^2.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

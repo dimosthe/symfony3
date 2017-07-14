@@ -78,10 +78,10 @@ doctrine_migrations:
 old_sound_rabbit_mq:
     connections:
         broker_connection:
-            host:     'localhost'
-            port:     5672
-            user:     'rabbitmq_user'
-            password: '_5)B9:awwMCB5)6_'
+            host:     "%rabbit_mq_host%"
+            port:     "%rabbit_mq_port%"
+            user:     "%rabbit_mq_user%"
+            password: "%rabbit_mq_pswd%"
             vhost:    '/'
             lazy:     true
             connection_timeout: 3
@@ -124,3 +124,38 @@ old_sound_rabbit_mq:
             queue_options:    {name: 'salesforce'}
             callback:         salesforce_call
             qos_options:      {prefetch_size: 0, prefetch_count: 1, global: false}
+
+rabbit_mq_supervisor:
+    supervisor_instance_identifier:     supervisord
+    #paths:
+    #    workspace_directory:            /home/george/Projects/symfony/symfony3/app/supervisor/
+    #    configuration_file:             /home/george/Projects/symfony/symfony3/app/supervisor/supervisord.conf
+    #    pid_file:                       /home/george/Projects/symfony/symfony3/app/supervisor/supervisord.pid
+    #    sock_file:                      /home/george/Projects/symfony/symfony3/app/supervisor/supervisord.sock
+    #    log_file:                       /home/george/Projects/symfony/symfony3/app/supervisor/supervisord.log
+    #    worker_configuration_directory: /home/george/Projects/symfony/symfony3/app/supervisor/worker/
+    #    worker_output_log_file:         /home/george/Projects/symfony/symfony3/app/supervisor/logs/%kernel.environment%.log
+    #    worker_error_log_file:          /home/george/Projects/symfony/symfony3/app/supervisor/logs/%kernel.environment%.log
+    #commands:
+    #    rabbitmq_consumer:              user-specific-command:consumer
+    #    rabbitmq_multiple_consumer:     user-specific-command:multiple-consumer
+    consumer:
+        general:
+            messages:                   0       # consumer command option: messages to consume
+            #memory-limit:               32     # consumer command option: allowed memory for this process
+            debug:                      true    # consumer command option: enable debugging
+            without-signals:            true    # consumer command option: disable catching of system signals
+            worker:
+                count:                  1       # number of workers per consumer
+                startsecs:              2       # supervisord worker option: seconds to consider program running
+                autorestart:            true    # supervisord worker option: if supervisord should restarted program automatically. Eg if we kill the proccess, it will start automatically 
+                stopsignal:             INT     # supervisord worker option: the signal used to kill the program
+                stopasgroup:            true    # supervisord worker option: if whole process group should be stopped
+                stopwaitsecs:           60      # supervisord worker option: seconds to wait after stop signal before sending kill signal
+        individual:
+            # override options for specific consumers. you can use the same options for any consumer as in consumer.general
+            send_email:
+                worker:
+                    count:              10
+        #    consumer_name_2:
+                # […]

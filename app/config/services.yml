@@ -40,7 +40,9 @@ services:
 
   email_producer:
         class: AppBundle\Services\Producer
-        arguments: ["@old_sound_rabbit_mq.send_email_producer"]
+        arguments: ["@old_sound_rabbit_mq.send_email_producer", "@logger"]
+        tags:
+          - { name: monolog.logger, channel: product }
 
   salesforce_producer:
         class: AppBundle\Services\SalesforceProducer
