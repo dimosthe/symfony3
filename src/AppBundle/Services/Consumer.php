@@ -55,12 +55,12 @@ class Consumer implements ConsumerInterface
     	
     	if($body->count % 2 == 0)
         {
-    		sleep(1);
+    		sleep(2);
             echo "low\n";
     	}
     	else
         {
-    		sleep(1);
+    		sleep(3);
             echo "high\n";
     	}
   	}

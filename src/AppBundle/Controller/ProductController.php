@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use AppBundle\Utils\CustomLogger;
 
 class ProductController extends Controller
 {
@@ -106,7 +107,9 @@ class ProductController extends Controller
      */ 
     public function produceAction() 
     {
-        for($i = 1; $i < 1001; $i++)
+        $this->get('customlogger')->log('/product/produce', 'Create background jobs', CustomLogger::SF, CustomLogger::INFO, $this->getUser()->getUsername());
+
+        for($i = 1; $i < 101; $i++)
         { 
             $timestamp = microtime(true)*10000;
             $msgId = $timestamp.random_int(10000000, 99999999);
@@ -115,6 +118,14 @@ class ProductController extends Controller
             $this->get("email_producer")->publish(json_encode($msg)); 
         } 
         
+        $response = new JsonResponse();
+
+        $response->setData(array(
+            'status' => 'success' 
+        ));
+
+        return $response;
+
         $response = new JsonResponse();
 
         $response->setData(array(

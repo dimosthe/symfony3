@@ -156,6 +156,6 @@ rabbit_mq_supervisor:
             # override options for specific consumers. you can use the same options for any consumer as in consumer.general
             send_email:
                 worker:
-                    count:              10
+                    count:              2
         #    consumer_name_2:
                 # […]

@@ -9,6 +9,11 @@ services:
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
   helper:
       class: AppBundle\Utils\Helper
+  customlogger:
+      class: AppBundle\Utils\CustomLogger
+      arguments: ['@monolog.logger.salesforce', '@monolog.logger.product']
+      #tags:
+      #    - { name: monolog.logger, channel: salesforce}
   security.basic_auth_request_matcher:
         class: AppBundle\Security\BasicAuthRequestMatcher
   security.logout_rest_handler:
