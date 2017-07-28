@@ -17,6 +17,7 @@ use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use AppBundle\Utils\CustomLogger;
+use AppBundle\Utils\CustomResponse;
 
 class ProductController extends Controller
 {
@@ -38,14 +39,8 @@ class ProductController extends Controller
 
         $this->get('monolog.logger.product')->info('/products', array('products' => $productsLog));
 
-        $response = new JsonResponse();
-
-        $response->setData(array(
-            'message' => 'Products list',
-            'data' => array('products' => $productsNorm)
-        ));
-
-        return $response;
+        $response = new CustomResponse(CustomResponse::productsList, 200, 'success', array('products' => $productsNorm));
+        return $response->create();
     }
 
     /**
@@ -59,13 +54,8 @@ class ProductController extends Controller
 
         if(!$this->get('helper')->checkRequestfields($allowedFields, $request))
         {
-            $response = new JsonResponse();
-
-            $response->setData(array(
-                'data' => 'invalid parameters'
-            ));
-
-            return $response;
+            $response = new CustomResponse(CustomResponse::invalidData, 200, 'failure');
+            return $response->create();
         }
 
         $product = new Product();
@@ -86,10 +76,8 @@ class ProductController extends Controller
 
             $this->get('monolog.logger.product')->error('/product/create', array('error' => $errorsString));
 
-            return $this->json(
-                array(
-                    'data' => $errorsString
-            ));
+            $response = new CustomResponse(CustomResponse::invalidData, 200, 'failure', array('errorMessage' => $errorsString));
+            return $response->create();
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -99,7 +87,8 @@ class ProductController extends Controller
         $event = new GenericEvent($product);
         $this->get('event_dispatcher')->dispatch(Events::PRODUCT_CREATED, $event);
 
-        return $this->json(array('response' => $product->getId()));
+        $response = new CustomResponse(CustomResponse::productCreated, 200, 'success', array('productId' => $product->getId()));
+        return $response->create();
     }
 
     /** 
@@ -118,20 +107,7 @@ class ProductController extends Controller
             $this->get("email_producer")->publish(json_encode($msg)); 
         } 
         
-        $response = new JsonResponse();
-
-        $response->setData(array(
-            'status' => 'success' 
-        ));
-
-        return $response;
-
-        $response = new JsonResponse();
-
-        $response->setData(array(
-            'status' => 'success' 
-        ));
-
-        return $response;
+        $response = new CustomResponse(CustomResponse::produceTest, 200, 'success');
+        return $response->create();
     }
 }
